@@ -1,4 +1,3 @@
-
 package simulador;
 
 import java.util.ArrayList;
@@ -22,9 +21,7 @@ public class FileSystemSimulator {
                 root = desserializar(estado);
                 salvarEstado(estado);
 
-                System.out.println(
-                    "Sistema recuperado pelo Journal."
-                );
+                System.out.println("Sistema recuperado pelo Journal.");
 
             } else if (Files.exists(storagePath)) {
                 root = carregarEstado();
@@ -51,23 +48,14 @@ public class FileSystemSimulator {
 
 
     private void executarTransacao(String operacao) {
-
         try {
-
-            // 1. Captura o estado atual
             byte[] estado = serializar(root);
-
-            // 2. Registra o início da transação
             journal.registrarInicio(operacao, estado);
 
-            // 3. Persiste o estado no disco
             salvarEstado(estado);
-
-            // 4. Confirma a transação com o mesmo ID
             journal.registrarCommit();
 
         } catch (IOException e) {
-
             throw new java.io.UncheckedIOException(
                 "Falha ao persistir a operação: " + operacao,
                 e
@@ -357,18 +345,14 @@ public class FileSystemSimulator {
     }
 
     public List<String> listarDiretorio(String path) {
-
         Directory diretorio = localizarDiretorio(path);
-
         List<String> resultado = new ArrayList<>();
 
         for (Map.Entry<String, Directory> entrada : diretorio.getDirectories().entrySet()) {
-
             resultado.add("[DIR] " + entrada.getKey());
         }
 
         for (Map.Entry<String, File> entrada : diretorio.getFiles().entrySet()) {
-
             resultado.add("[ARQ] " + entrada.getKey());
         }
 

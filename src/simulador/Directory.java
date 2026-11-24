@@ -5,12 +5,9 @@ import java.util.Map;
 import java.util.TreeMap;
 
 public class Directory implements Serializable {
-
     private static final long serialVersionUID = 1L;
-
     private String name;
     private Directory parent;
-
     private Map<String, File> files;
     private Map<String, Directory> directories;
 
