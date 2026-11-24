@@ -1,5 +1,11 @@
 # Simulador de Sistema de Arquivos
 
+**Disciplina:** Sistemas Operacionais
+
+**Integrantes:**
+- Davi Tavares Gadelha
+- Matheus Perestrello
+
 ## 1. Apresentação
 
 Este projeto consiste no desenvolvimento de um simulador de sistema de arquivos utilizando a linguagem Java. O objetivo é reproduzir, de forma simplificada, operações básicas de gerenciamento de arquivos e diretórios, permitindo compreender conceitos relacionados aos sistemas operacionais.
