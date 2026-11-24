@@ -1,16 +1,17 @@
+
 package simulador;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
 import java.util.Base64;
 import java.util.UUID;
 
 public class Journal {
 
     private final Path journalPath;
+    private String ultimoId;
 
     public Journal(String path) throws IOException {
 
@@ -36,11 +37,21 @@ public class Journal {
                 + operacao + "|" + dados;
 
         gravar(registro);
+
+        ultimoId = id;
     }
 
     public void registrarCommit() throws IOException {
 
-        gravar("COMMIT");
+        if (ultimoId == null) {
+            throw new IllegalStateException(
+                "Não existe transação iniciada."
+            );
+        }
+
+        gravar("COMMIT|" + ultimoId);
+
+        ultimoId = null;
     }
 
     private void gravar(String registro) throws IOException {
@@ -65,15 +76,21 @@ public class Journal {
 
         for (String linha : Files.readAllLines(journalPath)) {
 
-            if (linha.startsWith("BEGIN|")) {
+            if (!linha.startsWith("BEGIN|")) {
+                continue;
+            }
 
-                String[] partes = linha.split("\\|", 4);
+            String[] partes = linha.split("\\|", 4);
 
-                if (partes.length == 4) {
+            if (partes.length != 4) {
+                continue;
+            }
 
-                    ultimoEstado = Base64.getDecoder()
-                            .decode(partes[3]);
-                }
+            try {
+                ultimoEstado = Base64.getDecoder()
+                        .decode(partes[3]);
+            } catch (IllegalArgumentException e) {
+                // Ignora registro incompleto ou inválido.
             }
         }
 

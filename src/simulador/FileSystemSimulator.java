@@ -57,13 +57,13 @@ public class FileSystemSimulator {
             // 1. Captura o estado atual
             byte[] estado = serializar(root);
 
-            // 2. Registra a operação no Journal
+            // 2. Registra o início da transação
             journal.registrarInicio(operacao, estado);
 
-            // 3. Persiste o estado do sistema
+            // 3. Persiste o estado no disco
             salvarEstado(estado);
 
-            // 4. Confirma a transação
+            // 4. Confirma a transação com o mesmo ID
             journal.registrarCommit();
 
         } catch (IOException e) {
