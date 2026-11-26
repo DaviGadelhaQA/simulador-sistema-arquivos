@@ -5,6 +5,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Base64;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 public class Journal {
@@ -60,22 +62,26 @@ public class Journal {
     }
 
     public byte[] recuperarUltimoEstado() throws IOException {
+        Map<String, String> pendentes = new HashMap<>();
         byte[] ultimoEstado = null;
 
         for (String linha : Files.readAllLines(journalPath)) {
-            if (!linha.startsWith("BEGIN|")) {
-                continue;
-            }
-
             String[] partes = linha.split("\\|", 4);
 
-            if (partes.length != 4) {
-                continue;
-            }
+            if (partes[0].equals("BEGIN") && partes.length == 4) {
+                pendentes.put(partes[1], partes[3]);
 
-            try {
-                ultimoEstado = Base64.getDecoder().decode(partes[3]);
-            } catch (IllegalArgumentException e) {}
+            } else if (partes[0].equals("COMMIT") && partes.length == 2) {
+                String dados = pendentes.remove(partes[1]);
+
+                if (dados == null) {
+                    continue;
+                }
+
+                try {
+                    ultimoEstado = Base64.getDecoder().decode(dados);
+                } catch (IllegalArgumentException e) {}
+            }
         }
 
         return ultimoEstado;

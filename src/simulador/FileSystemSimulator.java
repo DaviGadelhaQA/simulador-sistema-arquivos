@@ -157,6 +157,18 @@ public class FileSystemSimulator {
         return atual;
     }
 
+    public String resolverDiretorio(String path) {
+        Directory atual = localizarDiretorio(path);
+        StringBuilder caminho = new StringBuilder();
+
+        while (atual.getParent() != null) {
+            caminho.insert(0, "/" + atual.getName());
+            atual = atual.getParent();
+        }
+
+        return caminho.isEmpty() ? "/" : caminho.toString();
+    }
+
     private String validarNome(String name) {
         if (name == null || name.isBlank()
                 || name.contains("/")

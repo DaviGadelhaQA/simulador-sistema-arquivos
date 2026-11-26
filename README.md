@@ -104,6 +104,8 @@ O simulador disponibiliza as seguintes operações:
 | Apagar diretório | `rmdir` | Remove um diretório vazio. |
 | Renomear diretório | `mvdir` | Altera o nome de um diretório. |
 | Listar conteúdo | `ls` | Exibe arquivos e subdiretórios. |
+| Mudar diretório | `cd` | Altera o diretório atual. Caminhos relativos passam a partir dele. |
+| Diretório atual | `pwd` | Exibe o caminho do diretório atual. |
 | Ajuda | `help` | Exibe os comandos disponíveis. |
 | Encerrar | `exit` | Finaliza o Shell. |
 
