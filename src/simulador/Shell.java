@@ -7,6 +7,7 @@ import java.util.Scanner;
 public class Shell {
     private final FileSystemSimulator sistema;
     private final Scanner scanner;
+    private String diretorioAtual = "/";
 
     public Shell(FileSystemSimulator sistema) {
         this.sistema = sistema;
@@ -20,7 +21,8 @@ public class Shell {
         System.out.println("======================================");
 
         while (true) {
-            System.out.print("fs:/$ ");
+            revalidarDiretorioAtual();
+            System.out.print("fs:" + diretorioAtual + "$ ");
 
             String entrada = scanner.nextLine().trim();
 
@@ -102,6 +104,18 @@ public class Shell {
                         );
                         break;
 
+                    case "cd":
+                        exigirArgumentos(comandos, 2);
+                        diretorioAtual = sistema.resolverDiretorio(
+                            caminho(comandos.get(1))
+                        );
+                        break;
+
+                    case "pwd":
+                        exigirArgumentos(comandos, 1);
+                        System.out.println(diretorioAtual);
+                        break;
+
                     case "ls":
                         if (comandos.size() > 2) {
                             throw new IllegalArgumentException(
@@ -111,7 +125,7 @@ public class Shell {
 
                         String diretorio = comandos.size() == 2
                                 ? caminho(comandos.get(1))
-                                : "/";
+                                : diretorioAtual;
 
                         List<String> itens = sistema.listarDiretorio(diretorio);
 
@@ -191,10 +205,24 @@ public class Shell {
         String normalizado = path.replace("\\", "/");
 
         if (!normalizado.startsWith("/")) {
-            normalizado = "/" + normalizado;
+            normalizado = diretorioAtual.equals("/")
+                    ? "/" + normalizado
+                    : diretorioAtual + "/" + normalizado;
         }
 
         return normalizado;
+    }
+
+    private void revalidarDiretorioAtual() {
+        try {
+            diretorioAtual = sistema.resolverDiretorio(diretorioAtual);
+
+        } catch (IllegalArgumentException e) {
+            System.out.println(
+                "Diretório atual não existe mais. Voltando para /."
+            );
+            diretorioAtual = "/";
+        }
     }
 
     private void mostrarAjuda() {
@@ -234,6 +262,14 @@ public class Shell {
 
         System.out.println(
             "ls [diretorio]                - Listar conteudo"
+        );
+
+        System.out.println(
+            "cd <diretorio>                - Mudar diretorio atual"
+        );
+
+        System.out.println(
+            "pwd                           - Mostrar diretorio atual"
         );
 
         System.out.println(
