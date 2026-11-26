@@ -4,7 +4,7 @@
 
 **Integrantes:**
 - Davi Tavares Gadelha
-- Matheus Perestrello
+- Matheus Perestrelo Correia
 
 ## 1. Apresentação
 
